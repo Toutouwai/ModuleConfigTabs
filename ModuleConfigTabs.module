@@ -1,0 +1,99 @@
+<?php namespace ProcessWire;
+
+class ModuleConfigTabs extends WireData implements Module, ConfigurableModule {
+
+	/**
+	 * Module information
+	 */
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'Module Config Tabs',
+			'summary' => 'Demonstration of tabs within a module config.',
+			'version' => '0.1.0',
+			'author' => 'Robin Sallis',
+			'href' => 'https://github.com/Toutouwai/ModuleConfigTabs',
+			'requires' => 'ProcessWire>=3.0.0, PHP>=5.4.0',
+		);
+	}
+
+	/**
+	 * Config inputfields
+	 *
+	 * @param InputfieldWrapper $inputfields
+	 */
+	public function getModuleConfigInputfields($inputfields) {
+		$modules = $this->wire()->modules;
+
+		// Get WireTabs
+		$modules->get('JqueryWireTabs');
+
+		// Load custom CSS and JS
+		$config = $this->wire()->config;
+		$info = $this->getModuleInfo();
+		$version = $info['version'];
+		$config->styles->add($config->urls->$this . "{$this}.css?v=$version");
+		$config->scripts->add($config->urls->$this . "{$this}.js?v=$version");
+
+		// Wrapper to hold the tabs
+		/** @var InputfieldWrapper $tabs_container */
+		$tabs_container = $modules->get('InputfieldWrapper');
+		$tabs_container->id = 'mct-tabs-container';
+		$inputfields->add($tabs_container);
+
+
+		// Tab 1
+		/** @var InputfieldWrapper $tab */
+		$tab1 = $modules->get('InputfieldWrapper');
+		$tab1->attr('title', 'Name');
+		$tab1->attr('class', 'WireTab');
+		$tabs_container->add($tab1);
+
+		/** @var InputfieldText $f */
+		$f = $modules->get('InputfieldText');
+		$f->name = 'first_name';
+		$f->label = $this->_('First name');
+		$f->value = $this->{$f->name};
+		$f->columnWidth = 50;
+		$tab1->add($f);
+
+		/** @var InputfieldText $f */
+		$f = $modules->get('InputfieldText');
+		$f->name = 'last_name';
+		$f->label = $this->_('Last name');
+		$f->value = $this->{$f->name};
+		$f->columnWidth = 50;
+		$tab1->add($f);
+
+
+		// Tab 2
+		/** @var InputfieldWrapper $tab */
+		$tab2 = $modules->get('InputfieldWrapper');
+		$tab2->attr('title', 'Contact');
+		$tab2->attr('class', 'WireTab');
+		$tabs_container->add($tab2);
+
+		/** @var InputfieldEmail $f */
+		$f = $modules->get('InputfieldEmail');
+		$f->name = 'email';
+		$f->label = $this->_('Email');
+		$f->value = $this->{$f->name};
+		$f->columnWidth = 50;
+		$tab2->add($f);
+
+		/** @var InputfieldText $f */
+		$f = $modules->get('InputfieldText');
+		$f->name = 'phone';
+		$f->label = $this->_('Phone');
+		$f->value = $this->{$f->name};
+		$f->columnWidth = 50;
+		$tab2->add($f);
+
+		/** @var InputfieldTextarea $f */
+		$f = $modules->get('InputfieldTextarea');
+		$f->name = 'address';
+		$f->label = $this->_('Address');
+		$f->value = $this->{$f->name};
+		$tab2->add($f);
+	}
+
+}
